@@ -215,11 +215,7 @@ class KtVariant {
         return Transform(basis, origin)
     }
 
-    fun <T : KtObject> asObject(constructor: () -> T): T {
-        return KtObject.instantiateWith(data.objectValue) {
-            constructor()
-        }
-    }
+    fun <T : KtObject> asObject(constructor: () -> T) = KtObject.instantiateWith(data.objectValue) { constructor() }
 
     enum class Type {
         NIL,
