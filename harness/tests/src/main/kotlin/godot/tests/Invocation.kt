@@ -38,27 +38,27 @@ class Invocation : Spatial() {
 		println("Instance id: ${getInstanceId()}")
 	}
 
-    @RegisterFunction
-    fun _ready() {
-        val formerName = name
-        println("Name is: $name")
-        name = "TestName"
-        println("Name is: $name")
-        name = formerName
-        val test = DateTime.now() //external dependency to test dependency inclusion in dummyCompilation
-    }
+	@RegisterFunction
+	fun _ready() {
+		val formerName = name
+		println("Name is: $name")
+		name = "TestName"
+		println("Name is: $name")
+		name = formerName
+		val test = DateTime.now() //external dependency to test dependency inclusion in dummyCompilation
+	}
 
-    override fun _onInit() {
-        println("Hello Invocation!")
-    }
+	override fun _onInit() {
+		println("Hello Invocation!")
+	}
 
-    override fun _onDestroy() {
-        invocation.free()
-    }
+	override fun _onDestroy() {
+		invocation.free()
+	}
 
-    //Type cast checks
-    @RegisterFunction
-    fun parentIsSpatial() = getParent() is Spatial
-    @RegisterFunction
-    fun isObjectSpatial(obj: Object) = obj is Spatial
+	//Type cast checks
+	@RegisterFunction
+	fun parentIsSpatial() = getParent() is Spatial
+	@RegisterFunction
+	fun isObjectSpatial(obj: Object) = obj is Spatial
 }
