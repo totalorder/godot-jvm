@@ -3,9 +3,9 @@ package godot.tests
 import godot.Node
 import godot.Object
 import godot.Spatial
-import godot.registration.annotation.RegisterClass
-import godot.registration.annotation.RegisterFunction
-import godot.registration.annotation.RegisterProperty
+import godot.annotation.RegisterClass
+import godot.annotation.RegisterFunction
+import godot.annotation.RegisterProperty
 import org.joda.time.DateTime
 
 @RegisterClass
@@ -13,30 +13,44 @@ class OtherScript : Node() {
 
 }
 
+enum class TestEnum {
+    ENUM_1
+}
+
 @RegisterClass
 class Invocation : Spatial() {
-	@RegisterProperty var x = 0
-	@RegisterProperty var y = 0.0
-	@RegisterProperty var z = 0.0f
-	@RegisterProperty var customName = "Idonthaveanyidea"
+    @RegisterProperty var x = 0
+    @RegisterProperty var y = 0.0
+    @RegisterProperty var z = 0.0f
+    @RegisterProperty var customName = "Idonthaveanyidea"
 
-	var invocation = OtherScript()
+    var invocation = OtherScript()
 
-	@RegisterFunction fun intValue(value: Int) = value
-	@RegisterFunction fun longValue(value: Long) = value
-	@RegisterFunction fun floatValue(value: Float) = value
-	@RegisterFunction fun doubleValue(value: Double) = value
-	@RegisterFunction fun booleanValue(value: Boolean) = value
-	@RegisterFunction fun stringValue(value: String) = value
+    @RegisterProperty
+    var enumTest = TestEnum.ENUM_1
 
-	@RegisterFunction
-	fun intAddition(a: Int, b: Int) = a + b
+    @RegisterFunction
+    fun intValue(value: Int) = value
+    @RegisterFunction
+    fun longValue(value: Long) = value
+    @RegisterFunction
+    fun floatValue(value: Float) = value
+    @RegisterFunction
+    fun doubleValue(value: Double) = value
+    @RegisterFunction
+    fun booleanValue(value: Boolean) = value
+    @RegisterFunction
+    fun stringValue(value: String) = value
 
-	@RegisterFunction
+    @RegisterFunction
+    fun intAddition(a: Int, b: Int) = a + b
+
+    @RegisterFunction
 	fun _enterTree() {
-		println("Enter tree !")
-		println("Instance id: ${getInstanceId()}")
-	}
+        println("Enter tree !")
+        println("Instance id: ${getInstanceId()}")
+        println("CustomName is $customName")
+    }
 
 	@RegisterFunction
 	fun _ready() {

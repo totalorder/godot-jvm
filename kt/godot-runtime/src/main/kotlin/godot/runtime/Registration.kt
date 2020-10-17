@@ -52,7 +52,8 @@ class ClassBuilderDsl<T : KtObject>(
         type: KtVariant.Type,
         className: String,
         hint: PropertyHint = PropertyHint.NONE,
-        hintString: String = ""
+        hintString: String = "",
+        defaultArgument: KtVariant = KtVariant(Unit)
     ) {
         val propertyName = kProperty.name.camelToSnakeCase()
         require(!properties.contains(propertyName)) {
@@ -68,7 +69,8 @@ class ClassBuilderDsl<T : KtObject>(
             ),
             kProperty,
             getValueConverter,
-            setValueConverter
+            setValueConverter,
+            defaultArgument
         )
     }
 
@@ -90,7 +92,8 @@ class ClassBuilderDsl<T : KtObject>(
             ),
             kProperty,
             { enum -> KtVariant(enum.ordinal) },
-            { ktVariant -> enumValues<P>()[ktVariant.asInt()] }
+            { ktVariant -> enumValues<P>()[ktVariant.asInt()] },
+            KtVariant(Unit)
         )
     }
 
@@ -161,7 +164,8 @@ class ClassBuilderDsl<T : KtObject>(
                 }
 
                 enums
-            }
+            },
+            KtVariant(Unit)
         )
     }
 
@@ -178,7 +182,7 @@ class ClassBuilderDsl<T : KtObject>(
         require(!properties.contains(property.name)) {
             "Found two properties with name ${property.name} for class $name"
         }
-        properties[property.name] = KtProperty(property, kProperty, getValueConverter, setValueConverter)
+        properties[property.name] = KtProperty(property, kProperty, getValueConverter, setValueConverter, KtVariant(Unit))
     }
 
     fun <R> function(
