@@ -1,5 +1,6 @@
 package godot.tests
 
+import godot.NavigationMesh
 import godot.Node
 import godot.Object
 import godot.Spatial
@@ -29,16 +30,32 @@ class Invocation : Spatial() {
     @RegisterProperty
     var enumTest = TestEnum.ENUM_1
 
+    @RegisterProperty
+    var resourceTest = NavigationMesh()
+        set(value) {
+            println("Setter of property resourceTest called. InstanceId: ${value.getInstanceId()}")
+            field = value
+        }
+        get() {
+            println("Getter of property resourceTest called. InstanceId: ${field.getInstanceId()}")
+            return field
+        }
+
     @RegisterFunction
     fun intValue(value: Int) = value
+
     @RegisterFunction
     fun longValue(value: Long) = value
+
     @RegisterFunction
     fun floatValue(value: Float) = value
+
     @RegisterFunction
     fun doubleValue(value: Double) = value
+
     @RegisterFunction
     fun booleanValue(value: Boolean) = value
+
     @RegisterFunction
     fun stringValue(value: String) = value
 
@@ -46,16 +63,16 @@ class Invocation : Spatial() {
     fun intAddition(a: Int, b: Int) = a + b
 
     @RegisterFunction
-	fun _enterTree() {
+    fun _enterTree() {
         println("Enter tree !")
         println("Instance id: ${getInstanceId()}")
         println("CustomName is $customName")
     }
 
-	@RegisterFunction
-	fun _ready() {
-		val formerName = name
-		println("Name is: $name")
+    @RegisterFunction
+    fun _ready() {
+        val formerName = name
+        println("Name is: $name")
 		name = "TestName"
 		println("Name is: $name")
 		name = formerName
@@ -73,6 +90,7 @@ class Invocation : Spatial() {
 	//Type cast checks
 	@RegisterFunction
 	fun parentIsSpatial() = getParent() is Spatial
-	@RegisterFunction
+
+    @RegisterFunction
 	fun isObjectSpatial(obj: Object) = obj is Spatial
 }

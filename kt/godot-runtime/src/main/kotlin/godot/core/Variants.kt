@@ -251,21 +251,21 @@ class KtVariant {
 
     companion object {
         internal val TYPE_TO_WIRE_VALUE_TYPE = mapOf(
-                Type.NIL to Wire.Value.TypeCase.NIL_VALUE,
-                Type.LONG to Wire.Value.TypeCase.LONG_VALUE,
-                Type.DOUBLE to Wire.Value.TypeCase.LONG_VALUE,
-                Type.STRING to Wire.Value.TypeCase.LONG_VALUE,
-                Type.BOOL to Wire.Value.TypeCase.LONG_VALUE,
-                Type.VECTOR2 to Wire.Value.TypeCase.VECTOR2_VALUE,
-                Type.RECT2 to Wire.Value.TypeCase.RECT2_VALUE,
-                Type.VECTOR3 to Wire.Value.TypeCase.VECTOR3_VALUE,
-                Type.TRANSFORM2D to Wire.Value.TypeCase.TRANSFORM2D_VALUE,
-                Type.PLANE to Wire.Value.TypeCase.PLANE_VALUE,
-                Type.QUAT to Wire.Value.TypeCase.QUAT_VALUE,
-                Type.AABB to Wire.Value.TypeCase.AABB_VALUE,
-                Type.BASIS to Wire.Value.TypeCase.BASIS_VALUE,
-                Type.TRANSFORM to Wire.Value.TypeCase.TRANSFORM_VALUE,
-                Type.OBJECT to Wire.Value.TypeCase.OBJECT_VALUE
+            Type.NIL to Wire.Value.TypeCase.NIL_VALUE,
+            Type.LONG to Wire.Value.TypeCase.LONG_VALUE,
+            Type.DOUBLE to Wire.Value.TypeCase.REAL_VALUE,
+            Type.STRING to Wire.Value.TypeCase.STRING_VALUE,
+            Type.BOOL to Wire.Value.TypeCase.BOOL_VALUE,
+            Type.VECTOR2 to Wire.Value.TypeCase.VECTOR2_VALUE,
+            Type.RECT2 to Wire.Value.TypeCase.RECT2_VALUE,
+            Type.VECTOR3 to Wire.Value.TypeCase.VECTOR3_VALUE,
+            Type.TRANSFORM2D to Wire.Value.TypeCase.TRANSFORM2D_VALUE,
+            Type.PLANE to Wire.Value.TypeCase.PLANE_VALUE,
+            Type.QUAT to Wire.Value.TypeCase.QUAT_VALUE,
+            Type.AABB to Wire.Value.TypeCase.AABB_VALUE,
+            Type.BASIS to Wire.Value.TypeCase.BASIS_VALUE,
+            Type.TRANSFORM to Wire.Value.TypeCase.TRANSFORM_VALUE,
+            Type.OBJECT to Wire.Value.TypeCase.OBJECT_VALUE
         )
 
         private inline fun build(cb: Wire.Value.Builder.() -> Unit): Wire.Value {
