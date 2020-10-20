@@ -1,9 +1,6 @@
 package godot
 
-import godot.core.KtObject
-import godot.core.KtVariant
-import godot.core.TransferContext
-import godot.core.TypeManager
+import godot.core.*
 import godot.util.VoidPtr
 
 open class Object : KtObject() {
@@ -48,13 +45,16 @@ open class Spatial : Node() {
     }
 }
 
-open class Reference : Object() {
+open class Reference : Object(), KtReference {
     override fun __new(): VoidPtr {
         return TransferContext.invokeConstructor("Reference")
     }
+
+    override val referencePtr: VoidPtr
+        get() = rawPtr
 }
 
-open class Resource : Object() {
+open class Resource : Reference() {
     override fun __new(): VoidPtr {
         return TransferContext.invokeConstructor("Resource")
     }
