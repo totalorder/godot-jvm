@@ -36,33 +36,6 @@ data class KtFunctionArgument(
 //    }
 //}
 
-class ReferenceDelegate<T : KtReference>(val defaultValue: () -> T) {
-    private var backingField: T? = null
-
-    operator fun getValue(thisRef: KtObject, property: KProperty<*>): T {
-        if (backingField == null) {
-            backingField = defaultValue()
-            TransferContext.updateREF(thisRef, property.name, backingField!!)
-        }
-        return backingField!!
-    }
-
-    operator fun setValue(thisRef: KtObject, property: KProperty<*>, value: T) {
-        backingField = value
-        TransferContext.updateREF(thisRef, property.name, value)
-    }
-}
-
-class ReferenceDelegateProvider<T : KtReference>(private val defaultValue: () -> T) {
-    operator fun provideDelegate(thisRef: KtObject, property: KProperty<*>): ReferenceDelegate<T> {
-        return ReferenceDelegate(defaultValue)
-    }
-}
-
-fun <T : KtReference> refProperty(defaultValue: () -> T): ReferenceDelegateProvider<T> {
-    return ReferenceDelegateProvider(defaultValue)
-}
-
 //class Test: KtObject() {
 //    @RegisterProperty
 //    var resource by refProperty(NavigationMesh())
@@ -124,7 +97,8 @@ class ClassBuilderDsl<T : KtObject>(
         className: String,
         hint: PropertyHint = PropertyHint.NONE,
         hintString: String = "",
-        defaultArgument: KtVariant = KtVariant(Unit)
+        defaultArgument: KtVariant = KtVariant(Unit),
+        isRef: Boolean = false
     ) {
         val propertyName = kProperty.name.camelToSnakeCase()
         require(!properties.contains(propertyName)) {
@@ -141,7 +115,8 @@ class ClassBuilderDsl<T : KtObject>(
             kProperty,
             getValueConverter,
             setValueConverter,
-            defaultArgument
+            defaultArgument,
+            isRef
         )
     }
 
@@ -164,7 +139,8 @@ class ClassBuilderDsl<T : KtObject>(
             kProperty,
             { enum -> KtVariant(enum.ordinal) },
             { ktVariant -> enumValues<P>()[ktVariant.asInt()] },
-            KtVariant(Unit)
+            KtVariant(Unit),
+            false
         )
     }
 
@@ -236,7 +212,8 @@ class ClassBuilderDsl<T : KtObject>(
 
                 enums
             },
-            KtVariant(Unit)
+            KtVariant(Unit),
+            false
         )
     }
 
@@ -244,6 +221,7 @@ class ClassBuilderDsl<T : KtObject>(
         kProperty: KMutableProperty1<T, P>,
         getValueConverter: (P) -> KtVariant,
         setValueConverter: ((KtVariant) -> P),
+        isRef: Boolean = false,
         pib: KtPropertyInfoBuilderDsl.() -> Unit
     ) {
         val builder = KtPropertyInfoBuilderDsl()
@@ -253,7 +231,7 @@ class ClassBuilderDsl<T : KtObject>(
         require(!properties.contains(property.name)) {
             "Found two properties with name ${property.name} for class $name"
         }
-        properties[property.name] = KtProperty(property, kProperty, getValueConverter, setValueConverter, KtVariant(Unit))
+        properties[property.name] = KtProperty(property, kProperty, getValueConverter, setValueConverter, KtVariant(Unit), isRef)
     }
 
     fun <R> function(
