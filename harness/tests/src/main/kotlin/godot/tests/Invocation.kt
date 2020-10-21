@@ -21,26 +21,26 @@ enum class TestEnum {
 
 @RegisterClass
 class Invocation : Spatial() {
-    @RegisterProperty var x = 0
-    @RegisterProperty var y = 0.0
-    @RegisterProperty var z = 0.0f
-    @RegisterProperty var customName = "Idonthaveanyidea"
+	@RegisterProperty var x = 0
+	@RegisterProperty var y = 0.0
+	@RegisterProperty var z = 0.0f
+	@RegisterProperty var customName = "Idonthaveanyidea"
 
-    var invocation = OtherScript()
+	var invocation = OtherScript()
 
-    @RegisterProperty
-    var enumTest = TestEnum.ENUM_1
+	@RegisterProperty
+	var enumTest = TestEnum.ENUM_1
 
-    @RegisterProperty var resourceTest by refProperty(::NavigationMesh)
+	@RegisterProperty var resourceTest by refProperty(::NavigationMesh)
 
-    @RegisterFunction
-    fun intValue(value: Int) = value
+	@RegisterFunction
+	fun intValue(value: Int) = value
 
-    @RegisterFunction
-    fun longValue(value: Long) = value
+	@RegisterFunction
+	fun longValue(value: Long) = value
 
-    @RegisterFunction
-    fun floatValue(value: Float) = value
+	@RegisterFunction
+	fun floatValue(value: Float) = value
 
 	@RegisterFunction
 	fun doubleValue(value: Double) = value
