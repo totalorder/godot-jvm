@@ -1,0 +1,57 @@
+cmake_minimum_required(VERSION 3.13.4)
+project(cseal)
+
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+add_definitions(-DTOOLS_ENABLED -DTYPED_METHOD_BIND -DDEBUG_METHODS_ENABLED)
+
+file(GLOB_RECURSE GODOT_CORE_HEADERS CONFIGURE_DEPENDS core/*.h)
+file(GLOB_RECURSE GODOT_CORE_SOURCES CONFIGURE_DEPENDS core/*.cpp)
+set(GODOT_PLATFORM_INCLUDE_DIR platform/x11/)
+
+add_library(godot_core SHARED ${GODOT_PLATFORM_HEADERS} ${GODOT_CORE_HEADERS} ${GODOT_CORE_SOURCES})
+target_sources(godot_core PUBLIC ${GODOT_ROOT_DIR})
+target_include_directories(godot_core PUBLIC ${GODOT_PLATFORM_INCLUDE_DIR} ${PROJECT_SOURCE_DIR})
+
+# kotlin_jvm
+set(KOTLIN_DIR modules/kotlin_jvm)
+set(PROTOBUF_INCLUDE_DIR ${KOTLIN_DIR}/libprotobuf/include)
+
+set(JAVA_INCLUDE_PATH ${KOTLIN_DIR}/harness/tests/jre/include)
+set(JAVA_AWT_LIBRARY NotNeeded)
+set(JAVA_JVM_LIBRARY NotNeeded)
+set(JAVA_INCLUDE_PATH2 ${KOTLIN_DIR}/harness/tests/jre/include/linux)
+set(JAVA_AWT_INCLUDE_PATH NotNeeded)
+find_package(JNI REQUIRED)
+
+file(GLOB_RECURSE KOTLIN_HEADERS CONFIGURE_DEPENDS ${KOTLIN_DIR}/src/*.h)
+file(GLOB_RECURSE KOTLIN_SOURCES CONFIGURE_DEPENDS ${KOTLIN_DIR}/src/*.cpp)
+#file(GLOB_RECURSE WIRE_HEADERS CONFIGURE_DEPENDS ${KOTLIN_DIR}/src/wire/*.pb.h)
+#file(GLOB_RECURSE WIRE_SOURCES CONFIGURE_DEPENDS ${KOTLIN_DIR}/src/wire/*.pb.cc)
+set(WIRE_SOURCES ${KOTLIN_DIR}/src/wire/wire.pb.h ${KOTLIN_DIR}/src/wire/wire.pb.cc)
+set(REGISTER_TYPE_SOURCES ${KOTLIN_DIR}/register_types.h ${KOTLIN_DIR}/register_types.cpp)
+file(GLOB_RECURSE JNI_HEADERS CONFIGURE_DEPENDS ${KOTLIN_DIR}/src/jni/*.h)
+file(GLOB_RECURSE JNI_SOURCES CONFIGURE_DEPENDS ${KOTLIN_DIR}/src/jni/*.cpp)
+
+#Glob("src/jni/*.cpp")
+add_library(kotlin_jvm SHARED ${REGISTER_TYPE_SOURCES} ${KOTLIN_HEADERS} ${KOTLIN_SOURCES} ${WIRE_SOURCES} ${JNI_HEADERS} ${JNI_SOURCES})
+
+target_include_directories(kotlin_jvm PUBLIC ${GODOT_PLATFORM_INCLUDE_DIR} ${JNI_INCLUDE_DIRS} ${PROTOBUF_INCLUDE_DIR} ${PROJECT_SOURCE_DIR})
+target_link_libraries(kotlin_jvm protobuf jvm)
+target_link_directories(kotlin_jvm PUBLIC ${KOTLIN_DIR}/libprotobuf/lib ${KOTLIN_DIR}/harness/tests/jre/lib/server)
+
+add_custom_command(TARGET kotlin_jvm
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:kotlin_jvm> ../bin/libkotlin_jvm.x11.tools.64.llvm.so)
+
+add_executable(godot IMPORTED) #  [GLOBAL]
+set_property(TARGET godot PROPERTY IMPORTED_LOCATION ../bin/godot.x11.tools.64.llvm)
+target_link_libraries(godot INTERFACE kotlin_jvm)
+#set_target_properties(kotlin_jvm PROPERTIES LINKER_LANGUAGE CXX)
+
+add_library(godot_debug SHARED ${REGISTER_TYPE_SOURCES} ${KOTLIN_HEADERS} ${KOTLIN_SOURCES} ${WIRE_SOURCES} ${JNI_HEADERS} ${JNI_SOURCES})
+target_include_directories(godot_debug PUBLIC ${GODOT_PLATFORM_INCLUDE_DIR} ${JNI_INCLUDE_DIRS} ${PROTOBUF_INCLUDE_DIR} ${PROJECT_SOURCE_DIR})
+
+#include(modules/kotlin_jvm/CMakeLists.txt)

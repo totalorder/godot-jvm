@@ -64,6 +64,7 @@ void GDKotlin::init() {
     jni::InitArgs args;
     args.version = JNI_VERSION_1_8;
     args.option("-Xcheck:jni");
+    //args.option("-agentpath:/usr/lib/jvm/jdk-11.0.3/lib/libjdwp.so=transport=dt_socket,server=y,suspend=y,address=6112");
     jni::Jvm::init(args);
     print_line("Starting JVM ...");
     auto project_settings = ProjectSettings::get_singleton();
